@@ -8,21 +8,25 @@ class Element
 {
 	int Data; // значение элемента
 	Element* pNext; //адрес следующего элемента
+	static int count;
 
 public:
 
 
 	Element(int Data, Element* pNext = nullptr) :Data(Data), pNext(pNext)
 	{
+		++count;
 		std::cout << "EConstructor:\t" << this << std::endl;
 	}
 	~Element()
 	{
+		--count;
 		std::cout << "EDestructor:\t" << this << std::endl;
 	}
 	friend class ForwardList;
 };
 
+int Element::count = 0;
 
 class ForwardList  // Односвязный ( однонаправленный) список
 {
@@ -41,6 +45,7 @@ public:
 
 	// Adding elements
 
+
 	void push_front(int Data)
 	{
 		Element* New = new Element(Data); // Создаём новый элемент и помещаем в него значение Data
@@ -48,6 +53,93 @@ public:
 		Head = New; // Переводим Голову на новый элемент
 
 	}
+
+
+	void push_back(int Data)
+	{
+		// 0) Проверяем является ли список пустым
+
+		if (Head == nullptr) return push_front(Data);
+
+		// 1) Создаём новый элемент
+
+		Element* New = new Element(Data);
+
+		// 2) Доходим до конца списка
+
+		Element* Temp = Head;
+		while (Temp->pNext) // Пока, pNext текущего элемента НЕ ноль,
+			Temp = Temp->pNext; // переходим на след элемент
+
+		// Теперь мы находимся в последнем элементе. Т.е Temp->pNext == nullptr
+
+		// 3) Присоединяем новый элемент к последнему:
+
+
+		Temp->pNext = New;
+
+
+	}
+
+	void insert(int index, int Data)
+	{
+		if (index == 0 || Head == nullptr)return push_front(Data);
+		if (index > Head->count) return;
+
+		Element* New = new Element(Data);
+		//1) Доходим до нужного элемента;
+		Element* Temp = Head;
+		for (int i = 0; i < index - 1; ++i) Temp = Temp->pNext;
+		//2) Включаем новый элемент в список
+		New->pNext = Temp->pNext;
+		Temp->pNext = New;
+
+	}
+
+	// Removing elements:
+
+	void erase(int index)
+	{
+		if (index == 0 || Head == nullptr) return;
+		if (index > Head->count) return;
+
+		Element* Temp = Head;
+		for (int i = 0; i < index - 1; ++i) Temp = Temp->pNext;
+		
+		Element* Erased = Temp->pNext;
+		Temp->pNext = Temp->pNext->pNext;
+		delete Erased;
+
+	}
+
+	void pop_front()
+	{
+		if (Head == nullptr) return;
+		// 1) Запоминаем адрес удаляемого элемента:
+		Element* Erased = Head;
+		// 2) Исключаем удаляемый элемент из списка:
+		Head = Erased->pNext;
+		// 3) Удаляем элемент из памяти:
+		delete Erased;
+
+
+
+	}
+
+	void pop_back()
+	{
+		if (Head == nullptr)return;
+		if (Head->pNext == nullptr)return pop_front();
+		// 1) Доходим до предпоследнего элемента:
+		Element* Temp = Head;
+		while (Temp->pNext->pNext)Temp = Temp->pNext;
+		// 2) Удаляем элемент из памяти:
+		delete Temp->pNext;
+		// 3) Затираем адресудалённого элемента нулём:
+		Temp->pNext = nullptr;
+	}
+
+
 
 	// Methods
 
@@ -64,6 +156,8 @@ public:
 			std::cout << Temp << tab << Temp->Data << tab << Temp->pNext << std::endl;
 			Temp = Temp->pNext; // Переход на следующий элемент
 		}
+
+		std::cout << "Number of elements in list: " << Head->count << std::endl;
 	}
 
 
@@ -77,11 +171,25 @@ int main()
 
 	std::cout << "Enter the list size: "; std::cin >> n;
 	ForwardList List;
-
+	List.pop_front();
 	for (int i = 0; i < n; ++i)
 	{
-		List.push_front(rand() % 100);
+		// List.push_front(rand() % 100);
+		List.push_back(rand() % 100);
 	}
+	List.print();
+	//List.push_back(123);
+	//List.pop_front();
+	//List.pop_back();
+	//List.print();
+
+	int index;
+	int value;
+	std::cout << "Enter index of element: "; std::cin >> index;
+	std::cout << "Enter value of element: "; std::cin >> value;
+
+
+	List.insert(index, value);
 	List.print();
 
 	return 0;
