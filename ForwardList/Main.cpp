@@ -38,6 +38,15 @@ public:
 		Head = nullptr; // Если голова указывает на 0, то список пуст.
 		std::cout << "LConstructor:\t" << this << std::endl;
 	}
+
+	ForwardList(const ForwardList& other) {
+
+		this->Head = other.Head;
+		std::cout << "CopyLConstructor" << this << std::endl;
+
+	}
+
+
 	~ForwardList()
 	{
 		std::cout << "LDestructor:\t" << this << std::endl;
@@ -208,11 +217,19 @@ int main()
 	List.erase(index);
 	List.print();
 
-	ForwardList CopyOfList=List;
+	ForwardList List1;
+	List1 = List;
 
-	std::cout << "CopyOfList: " << std::endl;
+	std::cout << "CopyAsignment: " << std::endl;
 
-	CopyOfList.print();
+	List1.print();
+
+
+	ForwardList List2=List;
+
+	std::cout << "CopyConstructor: " << std::endl;
+
+	List2.print();
 
 
 	return 0;
