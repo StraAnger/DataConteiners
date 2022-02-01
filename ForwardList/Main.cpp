@@ -56,6 +56,19 @@ public:
 
 	~ForwardList()
 	{
+
+		Element* Temp = Head;
+
+		while (Head->pNext)
+		{
+			while (Temp->pNext->pNext)
+			{
+				Temp = Temp->pNext;
+			}
+			delete Temp->pNext;
+			Temp->pNext = nullptr;
+			Temp = Head;
+		}
 		std::cout << "LDestructor:\t" << this << std::endl;
 	}
 
@@ -121,7 +134,7 @@ public:
 
 		Element* Temp = Head;
 		for (int i = 0; i < index - 1; ++i) Temp = Temp->pNext;
-		
+
 		Element* Erased = Temp->pNext;
 		Temp->pNext = Temp->pNext->pNext;
 		delete Erased;
@@ -237,7 +250,7 @@ int main()
 	index = 0;
 
 	std::cout << "Enter index of element to erese: "; std::cin >> index;
-	
+
 	List.erase(index);
 	List.print();
 
@@ -249,7 +262,7 @@ int main()
 	List1.print();
 
 
-	ForwardList List2=List;
+	ForwardList List2 = List;
 
 	std::cout << "CopyConstructor: " << std::endl;
 
