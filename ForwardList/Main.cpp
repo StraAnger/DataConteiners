@@ -46,6 +46,13 @@ public:
 
 	}
 
+	ForwardList(ForwardList&& other)noexcept
+	{
+		this->Head = other.Head;
+		other.Head = nullptr;
+		std::cout << "MoveLConstructor\t" << this << std::endl;
+	}
+
 
 	~ForwardList()
 	{
@@ -175,9 +182,26 @@ public:
 
 	ForwardList& operator = (const ForwardList& other)
 	{
+		if (this == &other)
+			return *this;
+
 		this->Head = other.Head;
-		
+		std::cout << "CopyAssignment:\t" << this << std::endl;
 		return *this;
+	}
+
+	ForwardList& operator =(ForwardList&& other)
+	{
+
+		if (this == &other)
+			return *this;
+
+		delete this->Head;
+		this->Head = other.Head;
+
+		other.Head = nullptr;
+		std::cout << "MoveAssignment:\t" << this << std::endl;
+		return  *this;
 	}
 
 };
