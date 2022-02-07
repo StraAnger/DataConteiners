@@ -65,6 +65,14 @@ public:
 		return *this;
 	}
 
+	Iterator& operator++(int)
+	{
+		Iterator old = *this;
+		Temp = Temp->pNext;
+		return old;
+
+	}
+
 	bool operator == (const Iterator& other)const
 	{
 		return this->Temp == other.Temp;
@@ -360,7 +368,7 @@ void main()
 	//(ForwardList) = (initializer_list)
 	//list.print();
 
-	for (Iterator it = list.getHead(); it != nullptr; ++it)
+	for (Iterator it = list.getHead(); it != nullptr; it++)
 	{
 		cout << *it << tab;
 	}
