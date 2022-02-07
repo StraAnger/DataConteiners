@@ -31,23 +31,70 @@ public:
 #endif // DEBUG
 	}
 
-	Element operator ++ (int)
+	/*Element operator ++ (int)
 	{
 		Element Prev = *this;
-		*(this)= *(this->pNext);
+		*(this) = *Prev.pNext;
 		return Prev;
-	}
+	}*/
 
 	friend class ForwardList;
+	friend class Iterator;
 };
 
 int Element::count = 0;
+
+class Iterator
+{
+	Element* Temp;
+public:
+	
+	Iterator(Element* Temp = nullptr) : Temp(Temp)
+	{
+		cout << "ITConstructor:\t" << this << endl;
+	}
+	
+	~Iterator()
+	{
+		cout << "ITDestructor:\t" << this << endl;
+	}
+
+	Iterator& operator++()
+	{
+		Temp = Temp->pNext;
+		return *this;
+	}
+
+	bool operator == (const Iterator& other)const
+	{
+		return this->Temp == other.Temp;
+	}
+
+	bool operator != (const Iterator& other)const
+	{
+		return this->Temp != other.Temp;
+	}
+
+	int& operator*()
+	{
+		return Temp->Data;
+	}
+
+};
+
+
+
 
 class ForwardList//Односвязный (однонаправленный) список
 {
 	Element* Head;	//Голова списка - указывает на начальный элемент списка.
 	unsigned int size;//Размер списка
 public:
+	Element* getHead() const
+	{
+		return Head;
+	}
+
 	ForwardList()
 	{
 		Head = nullptr;//Если голова указывает на 0, то список пуст.
@@ -64,7 +111,7 @@ public:
 		}
 	}
 
-	ForwardList(const initializer_list<int>& il):ForwardList()
+	ForwardList(const initializer_list<int>& il) :ForwardList()
 	{
 		// il.begin() - возвращает итератор на начало контейнера 
 		// il.end() - возвращает итератор на конец контейнера 
@@ -105,13 +152,13 @@ public:
 		return Temp->Data;
 	}
 	// оператор [] возвращает значение по индексу
-	
+
 	//					Addigng elements:
 	void push_front(int Data)
 	{
-	//	Element* New = new Element(Data);//Создаем новый элемент и помещаем в него значение Data
-	//	New->pNext = Head;	//Привязывем новый элемент к началу списка
-	//	Head = New;	//Переводим Голову на новый элемент
+		//	Element* New = new Element(Data);//Создаем новый элемент и помещаем в него значение Data
+		//	New->pNext = Head;	//Привязывем новый элемент к началу списка
+		//	Head = New;	//Переводим Голову на новый элемент
 
 		Head = new Element(Data, Head);
 		size++;
@@ -150,7 +197,7 @@ public:
 
 		Element* Temp = Head;
 		for (int i = 0; i < index - 1; i++) Temp = Temp->pNext;
-		Temp->pNext = new Element(Data,Temp->pNext);
+		Temp->pNext = new Element(Data, Temp->pNext);
 
 
 		size++;
@@ -203,6 +250,7 @@ public:
 	//					Methods:
 	void print()const
 	{
+#ifdef OLD_PRINT
 		int a = 2;
 		int* pa = &a;
 
@@ -214,15 +262,20 @@ public:
 			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 			Temp = Temp->pNext;	//переход на следующий элемент
 		}
+#endif // OLD_PRINT
+
+		// for (Element* Temp = Head; Temp; Temp = Temp->pNext)
+		for (Element* Temp = Head; Temp; Temp++)
+			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 		cout << "Количество элементов списка: " << size << endl;
 		cout << "Общее количество элементов : " << Head->count << endl;
 	}
 };
 
-#define BASE_CHECK
-//#define DESTRUCTOR_CHECK
-//#define HOME_WORK_1
-//#define HOME_WORK_2
+// #define BASE_CHECK
+// #define DESTRUCTOR_CHECK
+// #define HOME_WORK_1
+#define HOME_WORK_2
 
 void main()
 {
@@ -296,16 +349,23 @@ void main()
 	for (int i = 0; i < n; i++)
 	{
 		cout << list[i] << tab;
-	}
+}
 	cout << endl;
 #endif // HOME_WORK_1
 
 #ifdef HOME_WORK_2
-	
+
 	//  l-value = r-value
 	ForwardList list = { 3,5,8,13,21 };
 	//(ForwardList) = (initializer_list)
-	list.print();
+	//list.print();
+
+	for (Iterator it = list.getHead(); it != nullptr; ++it)
+	{
+		cout << *it << tab;
+	}
+	cout << endl;
+
 #endif // HOME_WORK_2
 
 }
