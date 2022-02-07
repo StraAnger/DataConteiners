@@ -34,7 +34,7 @@ public:
 	Element operator ++ (int)
 	{
 		Element Prev = *this;
-		*this= *(this->pNext);
+		*(this)= *(this->pNext);
 		return Prev;
 	}
 
