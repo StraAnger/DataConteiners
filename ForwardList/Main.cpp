@@ -65,7 +65,7 @@ public:
 		return *this;
 	}
 
-	Iterator& operator++(int)
+	Iterator operator++(int)
 	{
 		Iterator old = *this;
 		Temp = Temp->pNext;
@@ -88,9 +88,15 @@ public:
 		return Temp->Data;
 	}
 
+	friend std::ostream& operator<<(std::ostream& os, const Iterator& obj);
+
 };
 
 
+std::ostream& operator<<(std::ostream& os, const Iterator& obj)
+{
+	return os << obj.Temp;
+}
 
 
 class ForwardList//Односвязный (однонаправленный) список
@@ -102,6 +108,21 @@ public:
 	{
 		return Head;
 	}
+
+
+
+	Iterator begin()
+	{
+		return Head;
+	}
+
+	Iterator end()
+
+	{
+
+		return nullptr;
+
+	};
 
 	ForwardList()
 	{
@@ -283,7 +304,9 @@ public:
 // #define BASE_CHECK
 // #define DESTRUCTOR_CHECK
 // #define HOME_WORK_1
-#define HOME_WORK_2
+//#define HOME_WORK_2
+//#define RANGE_BASE_FOR_ARRAY
+#define RANGE_BASE_FOR_LIST
 
 void main()
 {
@@ -368,12 +391,66 @@ void main()
 	//(ForwardList) = (initializer_list)
 	//list.print();
 
-	for (Iterator it = list.getHead(); it != nullptr; it++)
+	//for (Iterator it = list.getHead(); it != nullptr; it++)
+	//{
+	//	cout << *it << tab;
+	//}
+	//cout << endl;
+
+	Iterator it = list.getHead();
+	Iterator it2 = it++;
+	cout << it << endl;
+	cout << it2 << endl;
+
+#endif // HOME_WORK_2
+
+
+#ifdef RANGE_BASED_FOR_ARRAY
+	int arr[] = { 3,5,8,13,21 };
+	//for (int i = 0; i < sizeof(arr) / sizeof(int); ++i) // 20 байт делаи на 4 байта- количество элементов
+	//{
+	//	cout << arr[i] << tab;
+	//}
+	//cout << endl;
+
+	for (int i : arr)  //range-based for, или for для диапазона
+
 	{
-		cout << *it << tab;
+		cout << i << tab;
 	}
 	cout << endl;
 
-#endif // HOME_WORK_2
+	// Под диапазоном понимается контейнер ( массив, список и т.д.)
+	// в других языках это foreach  
+#endif // RANGE_BASED_FOR_ARRAY
+
+#ifdef RANGE_BASE_FOR_LIST
+	ForwardList list = { 3,5,8,13,21 };
+	for (int i : list)
+	{
+		cout << i << tab;
+	}
+	cout << endl;
+
+	// Range-based for
+	/*
+	-----------------------------
+	for(value:container)
+	{
+
+	cout<<value;
+
+	}
+	-----------------------------
+	value- последовательно принимает значения всех элементов контейнера
+
+
+	*/
+
+#endif // RANGE_BASE_FOR_LIST
+
+
+
+
 
 }
