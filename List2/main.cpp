@@ -126,6 +126,31 @@ public:
 		size--;
 	}
 
+	void erase(int index)
+	{
+		if (index > size)return;
+		if (index == 0)return pop_front();
+		
+		if (index <= size / 2)
+		{
+			Element* Temp = Head;
+			for (int i = 0; i < index - 1; i++) Temp = Temp->pNext;
+			Element* Erased = Temp->pNext;
+			Temp->pNext = Erased->pNext;
+			delete Erased;
+		}
+		if (index > size / 2)
+		{
+			Element* Temp = Tail;
+			for (int i = 0; i < index - 1; i++) Temp = Temp->pPrev;
+			Element* Erased = Temp->pPrev;
+			Temp->pPrev = Erased->pPrev;
+			delete Erased;
+		}
+
+		size--;
+	}
+
 	// Methods
 
 	void print()const
