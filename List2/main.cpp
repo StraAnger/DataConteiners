@@ -75,6 +75,28 @@ public:
 		size++;
 	}
 
+	void insert(int index, int Data)
+	{
+		if (index == 0 || Head == nullptr ) return push_front(Data);
+		if (index > size)return;
+		if (index <= size / 2)
+		{
+			Element* Temp = Head;
+			for (int i = 0; i < index - 1; i++) Temp = Temp->pNext;
+			Temp->pNext = new Element(Data, Temp->pNext);
+		}
+		if (index > size / 2)
+		{
+			Element* Temp = Tail;
+			for (int i = 0; i < index - 1; i++) Temp = Temp->pPrev;
+			Temp->pPrev = new Element(Data, Temp->pPrev);
+		}
+
+		
+		size++;
+	}
+
+
 	//					Removing elements:
 	void pop_front()
 	{
@@ -148,6 +170,8 @@ int main()
 
 	list.pop_front();
 	list.pop_back();
+
+	list.insert(2, 123);
 
 	list.print();
 	list.reverse_print();
