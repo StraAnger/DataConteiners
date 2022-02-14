@@ -75,6 +75,35 @@ public:
 		size++;
 	}
 
+	//					Removing elements:
+	void pop_front()
+	{
+		if (Head == nullptr)return;
+		//1) Запоминаем адрес удаляемого элемента:
+		Element* ErasedHead = Head;
+		//2) Исключаем удаляемый элемент из списка:
+		Head = ErasedHead->pNext;
+		Head->pPrev = nullptr;
+		//3) Удаляем элемен из памяти:
+		delete ErasedHead;
+
+		size--;
+	}
+
+	void pop_back()
+	{
+		if (Tail == nullptr)return;
+		//1) Запоминаем адрес удаляемого элемента:
+		Element* ErasedTail = Tail;
+		//2) Исключаем удаляемый элемент из списка:
+		Tail = ErasedTail->pPrev;
+		Tail->pNext = nullptr;
+		//3) Удаляем элемен из памяти:
+		delete ErasedTail;
+
+		size--;
+	}
+
 	// Methods
 
 	void print()const
@@ -113,6 +142,13 @@ int main()
 	{
 		list.push_back(rand() % 100);
 	}
+	list.print();
+	list.reverse_print();
+
+
+	list.pop_front();
+	list.pop_back();
+
 	list.print();
 	list.reverse_print();
 
