@@ -27,14 +27,98 @@ class List
 	Elemetn* Tail;
 	unsigned int size; */
 public:
+
+	class Iterator
+	{
+		Element* Temp;
+	public:
+		Iterator(Element* Temp = nullptr) : Temp(Temp)
+		{
+			std::cout << "ITConstructor:\t" << this << std::endl;
+		}
+
+		Iterator& operator ++ ()
+		{
+			Temp = Temp->pNext;
+			return *this;
+		}
+
+		Iterator& operator ++ (int)
+		{
+			Iterator old = *this;
+			Temp = Temp->pNext;
+			return old;
+		}
+
+		Iterator& operator -- ()
+		{
+			Temp = Temp->pPrev;
+			return *this;
+		}
+
+		Iterator& operator -- (int)
+		{
+			Iterator old = *this;
+			Temp = Temp->pPrev;
+			return old;
+		}
+
+		bool operator == (const Iterator& other)const
+		{
+			return this->Temp == other.Temp;
+		}
+
+		bool operator != (const Iterator& other)const
+		{
+			return this->Temp != other.Temp;
+		}
+
+		int& operator*()
+		{
+			return Temp->Data;
+		}
+
+		const int& operator*() const
+		{
+			return Temp->Data;
+		}
+
+	};
+
+
+	Iterator begin()
+	{
+		return Head;
+	}
+
+	Iterator end()
+	{
+		return nullptr;
+	}
+
 	List()
 	{
 		Head = Tail = nullptr;
 		size = 0;
 		std::cout << "LConstructor:\t" << this << std::endl;
 	}
+
+	List(const std::initializer_list<int>& il) :List()
+	{
+
+		std::cout << typeid(il.begin()).name() << std::endl;
+		for (int const* it = il.begin(); it != il.end(); ++it)
+		{
+			push_back(*it);
+		}
+
+	}
+
 	~List()
 	{
+	//	while (Head) pop_front();
+		while (Tail) pop_back();
+
 		std::cout << "LDestructor:\t" << this << std::endl;
 	}
 
@@ -77,52 +161,63 @@ public:
 
 	void insert(int index, int Data)
 	{
-		if (index == 0 || Head == nullptr ) return push_front(Data);
 		if (index > size)return;
-		if (index <= size / 2)
-		{
-			Element* Temp = Head;
-			for (int i = 0; i < index - 1; i++) Temp = Temp->pNext;
-			Temp->pNext = new Element(Data, Temp->pNext);
-		}
-		if (index > size / 2)
-		{
-			Element* Temp = Tail;
-			for (int i = 0; i < index - 1; i++) Temp = Temp->pPrev;
-			Temp->pPrev = new Element(Data, Temp->pPrev);
-		}
-
+		if (index == 0) return push_front(Data);
+		if (index == size) return push_back(Data);
 		
+
+		Element* Temp;
+		if (index < size / 2)
+		{
+			Temp = Head;
+			for (int i = 0; i < index; ++i) Temp = Temp->pNext;
+		}
+		else
+		{
+			Temp = Tail;
+			for (int i = 0; i < size - 1 - index; ++i) Temp = Temp->pPrev;
+		}
+		
+// не важно с какой стороны мы добрались до нужного элемента, процедура 
+		//  добавления нового элемента будет идентичной
+		Element* New = new Element(Data);
+		New->pNext = Temp;
+		New->pPrev = Temp->pPrev;
+		Temp->pPrev->pNext = New;
+		Temp->pPrev = New;
+
 		size++;
+
 	}
 
 
 	//					Removing elements:
 	void pop_front()
 	{
-		if (Head == nullptr)return;
-		//1) Запоминаем адрес удаляемого элемента:
-		Element* ErasedHead = Head;
-		//2) Исключаем удаляемый элемент из списка:
-		Head = ErasedHead->pNext;
+		if (Head == nullptr && Tail == nullptr) return;
+		if (Head == Tail)
+		{
+			delete Head;
+			Head = Tail = nullptr;
+			size--;
+			return;
+		}
+		
+		
+		Head = Head->pNext;
+		delete Head->pPrev;
 		Head->pPrev = nullptr;
-		//3) Удаляем элемен из памяти:
-		delete ErasedHead;
 
 		size--;
 	}
 
 	void pop_back()
 	{
-		if (Tail == nullptr)return;
-		//1) Запоминаем адрес удаляемого элемента:
-		Element* ErasedTail = Tail;
-		//2) Исключаем удаляемый элемент из списка:
-		Tail = ErasedTail->pPrev;
+		if (Tail == Head)return pop_front();
+		Tail = Tail->pPrev;
+		delete Tail->pNext; 
 		Tail->pNext = nullptr;
-		//3) Удаляем элемен из памяти:
-		delete ErasedTail;
-
+		
 		size--;
 	}
 
@@ -180,8 +275,11 @@ public:
 
 };
 
+//define BASE_CHECK;
+
 int main()
 {
+#ifdef BASE_CHECK
 	int n;
 	std::cout << "Enter number of elements: "; std::cin >> n;
 	List list;
@@ -192,14 +290,24 @@ int main()
 	list.print();
 	list.reverse_print();
 
+	int index;
+	int value;
+	std::cout << "Enter index"; std::cin >> index;
+	std::cout << "Enter value"; std::cin >> value;
 
-	list.pop_front();
-	list.pop_back();
-
-	list.insert(2, 123);
-
+	list.insert(index, value);
 	list.print();
 	list.reverse_print();
+#endif // BASE_CHECK
+
+	List list = { 3,5,8,13,21 };
+	list.print();
+
+	for (int i : list)
+	{
+		std::cout << i << tab;
+	}
+
 
 	return 0;
 }
