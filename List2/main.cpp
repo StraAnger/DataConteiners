@@ -216,13 +216,16 @@ public:
 			return;
 		}
 
-		Element* New = new Element(Data);
+		/*Element* New = new Element(Data);
 		New->pNext = Head;
 		Head->pPrev = New;
-		Head = New;
+		Head = New;*/
+
+		Head = Head->pPrev = new Element(Data, Head);
+
 		size++;
 
-	//	Head = Head->pPrev = new Element(Data, Head);
+	
 				
 	}
 
@@ -235,10 +238,13 @@ public:
 			return;
 		}
 
-		Element* New = new Element(Data);
-		New->pPrev = Tail;
-		Tail->pNext = New;
-		Tail = New;
+		//Element* New = new Element(Data);
+		//New->pPrev = Tail;
+		//Tail->pNext = New;
+		//Tail = New;
+
+		Tail = Tail->pNext = new Element(Data, nullptr, Tail);
+
 		size++;
 	}
 
@@ -263,11 +269,13 @@ public:
 		
 // не важно с какой стороны мы добрались до нужного элемента, процедура 
 		//  добавления нового элемента будет идентичной
-		Element* New = new Element(Data);
-		New->pNext = Temp;
-		New->pPrev = Temp->pPrev;
-		Temp->pPrev->pNext = New;
-		Temp->pPrev = New;
+		//Element* New = new Element(Data);
+		//New->pNext = Temp;
+		//New->pPrev = Temp->pPrev;
+		//Temp->pPrev->pNext = New;
+		//Temp->pPrev = New;
+
+		Temp->pPrev = Temp->pPrev->pNext = new Element(Data, Temp, Temp->pPrev);
 
 		size++;
 
@@ -358,7 +366,8 @@ public:
 
 };
 
-//define BASE_CHECK;
+//#define BASE_CHECK
+#define RANGE_BASED_FOR_LIST
 
 int main()
 {
@@ -382,6 +391,7 @@ int main()
 	list.print();
 	list.reverse_print();
 #endif // BASE_CHECK
+#ifdef RANGE_BASED_FOR_LIST
 
 	List list = { 3,5,8,13,21 };
 	list.print();
@@ -391,14 +401,19 @@ int main()
 		std::cout << i << tab;
 	}
 
-	std::cout << std:: endl;
+	std::cout << std::endl;
 
 	for (List::ReverseIterator it = list.rbegin(); it; ++it)
 	{
 		std::cout << *it << tab;
 	}
-	
+
 	std::cout << std::endl;
+#endif // RANGE_BASED_FOR_LIST
+
+
+
+
 
 	return 0;
 }
