@@ -19,10 +19,16 @@ protected:
 			std::cout << "EDestructor:\t" << this << std::endl;
 		}
 
+		bool isLeaf() const
+		{
+			return pLeft == pRight; // оба nullptr
+		}
+
+
 		friend class Tree;
 		friend class UniqueTree;
 
-	}*Root; // это то же что и Element* Root;
+	}* Root; // это то же что и Element* Root;
 
 
 public:
@@ -65,11 +71,20 @@ public:
 		insert(Data, Root);
 	}
 
+	void erase(int Data)
+	{
+		erase(Data,Root);
+	}
+
+
+
 	void clear()
 	{
 		clear(Root);
 		Root = nullptr;
 	}
+
+
 
 
 	int MinValue()const
@@ -126,6 +141,36 @@ private:
 		}
 	}
 
+	void erase(int Data, Element*& Root)
+	{
+		if (Root == nullptr) return;
+		erase(Data, Root->pLeft);
+		erase(Data, Root->pRight);
+		if (Data == Root->Data)
+		{
+			if (Root->isLeaf())
+			{
+				delete Root;
+				Root = nullptr;
+			}
+		}
+		else
+		{
+			if(Size(Root->pLeft)>Size(Root->pRight))
+			{
+				Root->Data = MaxValue(Root -> pLeft);
+				erase(MaxValue(Root->pLeft), Root->pLeft);
+			}
+			else
+			{
+				Root->Data = MinValue(Root->pRight);
+				erase(MinValue(Root->pRight), Root->pRight);
+			}
+		}
+	}
+
+
+
 	void clear(Element* Root)
 	{
 		if (Root == nullptr)return;
@@ -140,7 +185,7 @@ private:
 		insert(Root->Data,this->Root);
 		copy(Root->pLeft);
 		copy(Root->pRight);
-		delete(Root);
+
 	}
 
 	
@@ -247,8 +292,14 @@ int main()
 	return 0;
 #endif // BASE_CHECK
 
-	Tree tree = { 50,25,75,16,32,65,80 };
+	Tree tree = { 50,25,27,35,75,16,32,65,80 };
 	tree.print();
-	Tree tree2 = tree;
-	tree2.print();
+	/*Tree tree2 = tree;
+	tree2.print();*/
+	int value;
+	std::cout << "Enter the element to delete: "; std::cin >> value;
+	tree.erase(value);
+	tree.print();
+
+
 }
